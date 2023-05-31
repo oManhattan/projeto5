@@ -1,19 +1,26 @@
-package com.timesete.projeto5.model.model;
+package com.timesete.projeto5.model.entity;
 
 import lombok.*;
-import org.springframework.data.mongodb.core.mapping.MongoId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.LocalDateTime;
+
 
 @Builder
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
+@Document(collection = "User")
 public class UserModel {
 
-    @MongoId
-    private Long id;
+    @Id
+    private String id;
     private String name;
     private String login;
     private String password;
-    private String accessType;
+    private UserAccessType accessType;
+    private LocalDateTime createdAt;
+    private LocalDateTime lastModifiedAt;
 }
