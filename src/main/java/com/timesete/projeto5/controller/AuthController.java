@@ -1,6 +1,6 @@
 package com.timesete.projeto5.controller;
 
-import com.timesete.projeto5.business.service.UserService;
+import com.timesete.projeto5.business.service.AuthService;
 import com.timesete.projeto5.model.dto.User.LoginRequest;
 import com.timesete.projeto5.model.dto.User.UserResponse;
 
@@ -17,16 +17,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     @Autowired
-    private UserService userService;
+    private AuthService loginService;
 
     @PostMapping("/token")
     public ResponseEntity<?> token(@RequestBody LoginRequest request) {
         try {
-            Pair<UserResponse, String> pair = userService.authenticateUser(request);
-            return ResponseEntity.ok().header("Authorization", pair.getSecond()).body(pair.getFirst());
+            Pair<UserResponse, String> pair = loginService.authenticateUser(request);
+            return ResponseEntity
+                    .ok()
+                    .header("Authorization", pair.getSecond())
+                    .body(pair.getFirst());
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.status(400).body(String.format("%s\n%s", e.getMessage(), e.getStackTrace().toString()));
+            return ResponseEntity.status(400)
+                    .body(String.format("%s\n%s", e.getMessage(), e.getStackTrace().toString()));
 
         }
     }

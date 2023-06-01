@@ -9,7 +9,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "*", exposedHeaders = "*")
 @RestController
 @RequestMapping("/api/v1/user")
 public class UserController {
@@ -26,9 +25,10 @@ public class UserController {
             return ResponseEntity.status(400).body(e.getMessage());
         }
     }
-    
+
     @GetMapping("/all")
-    public ResponseEntity<?> getAllUsers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<?> getAllUsers(@RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         try {
             return ResponseEntity.ok().body(userService.getAllUsers(PageRequest.of(page, size)));
         } catch (Exception e) {
@@ -47,7 +47,8 @@ public class UserController {
     }
 
     @PutMapping("/self/update")
-    public ResponseEntity<?> updateUser(@RequestHeader(required = true, name = "Authorization") String token, @RequestBody(required = true) UserRequest request) {
+    public ResponseEntity<?> updateUser(@RequestHeader(required = true, name = "Authorization") String token,
+            @RequestBody(required = true) UserRequest request) {
         try {
             UserResponse response = userService.updateUserByToken(token, request);
             return ResponseEntity.ok().body(response);
@@ -77,7 +78,8 @@ public class UserController {
     }
 
     @PutMapping("/third/update")
-    public ResponseEntity<?> updateUserById(@RequestParam(required = true, name = "id") String id, @RequestBody(required = true) UserRequest request) {
+    public ResponseEntity<?> updateUserById(@RequestParam(required = true, name = "id") String id,
+            @RequestBody(required = true) UserRequest request) {
         try {
             UserResponse response = userService.updateUser(id, request);
             return ResponseEntity.ok().body(response);

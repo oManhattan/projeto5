@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class UserAuthenticationProviderService implements AuthenticationProvider {
+public class UserAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -27,10 +27,14 @@ public class UserAuthenticationProviderService implements AuthenticationProvider
         String email = authentication.getName();
         String password = authentication.getCredentials().toString();
 
-        UserModel user = userRepository.findUserByLogin(email).orElseThrow(() -> new BadCredentialsException("User not found"));
+        UserModel user = userRepository.findUserByLogin(email)
+                .orElseThrow(() -> new BadCredentialsException("User not found"));
 
         if (passwordEncoder.matches(password, user.getPassword())) {
-            return new UsernamePasswordAuthenticationToken(email, password, List.of(user.getAccessType().toSimpleGrantedAuthority()));
+            return new UsernamePasswordAuthenticationToken(
+                    email,
+                    password,
+                    List.of(user.getAccessType().toSimpleGrantedAuthority()));
         }
 
         throw new BadCredentialsException("Password is incorrect");

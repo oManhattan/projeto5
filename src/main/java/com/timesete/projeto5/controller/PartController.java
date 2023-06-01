@@ -5,7 +5,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +18,7 @@ import com.timesete.projeto5.model.dto.Part.PartRequest;
 @RestController
 @RequestMapping("/api/v1/part")
 public class PartController {
-    
+
     @Autowired
     private PartService partService;
 
@@ -33,7 +32,8 @@ public class PartController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<?> findAllParts(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<?> findAllParts(@RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         try {
             return ResponseEntity.ok().body(partService.getAllParts(PageRequest.of(page, size)));
         } catch (Exception e) {
@@ -51,7 +51,8 @@ public class PartController {
     }
 
     @PutMapping("/update{id}")
-    public ResponseEntity<?> updatePart(@PathVariable(required = true, name = "id") String id, @RequestBody(required = true) PartRequest request) {
+    public ResponseEntity<?> updatePart(@RequestParam(required = true, name = "id") String id,
+            @RequestBody(required = true) PartRequest request) {
         try {
             return ResponseEntity.ok().body(partService.updatePart(id, request));
         } catch (Exception e) {
@@ -60,7 +61,7 @@ public class PartController {
     }
 
     @DeleteMapping("/delete{id}")
-    public ResponseEntity<?> deletePart(@PathVariable(required = true, name = "id") String id) {
+    public ResponseEntity<?> deletePart(@RequestParam(required = true, name = "id") String id) {
         try {
             return ResponseEntity.ok().body(partService.deletePart(id));
         } catch (Exception e) {

@@ -1,38 +1,37 @@
 package com.timesete.projeto5.business.service;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.stereotype.Service;
+
 import com.timesete.projeto5.business.converter.UserConverter;
-import com.timesete.projeto5.business.util.RegexUtil;
-import com.timesete.projeto5.model.dto.User.LoginRequest;
+import com.timesete.projeto5.business.util.Utilities;
 import com.timesete.projeto5.model.dto.User.UserRequest;
 import com.timesete.projeto5.model.dto.User.UserResponse;
 import com.timesete.projeto5.model.entity.UserModel;
 import com.timesete.projeto5.model.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.util.Pair;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
+
     @Autowired
-    private AuthenticationManager authenticationManager;
+    private JwtDecoder jwtDecoder;
+
     @Autowired
-    private TokenService tokenService;
+    private Utilities utilities;
 
     public UserResponse createUser(UserRequest request) throws Exception {
 
@@ -40,11 +39,11 @@ public class UserService {
             throw new Exception("E-mail already registered");
         }
 
-        if (!RegexUtil.validateEmail(request.getLogin())) {
+        if (!Utilities.validateEmail(request.getLogin())) {
             throw new Exception("E-mail is invalid");
         }
 
-        if (!RegexUtil.validatePassword(request.getPassword())) {
+        if (!Utilities.validatePassword(request.getPassword())) {
             throw new Exception("Password does not conform to the minimum specified");
         }
 
@@ -61,23 +60,23 @@ public class UserService {
     public UserResponse updateUser(String id, UserRequest request) throws Exception {
         UserModel model = getModelById(id);
 
-        if (!model.getLogin().equals(request.getLogin())) {
+        if (!model.getLogin().equals(request.getLogin()) && request.getLogin() != null) {
             Optional<UserModel> user = userRepository.findUserByLogin(request.getLogin());
 
             if (user.isPresent()) {
                 throw new Exception("E-mail already registered");
             }
 
-            if (!RegexUtil.validateEmail(request.getLogin())) {
+            if (!Utilities.validateEmail(request.getLogin())) {
                 throw new Exception("E-mail is invalid");
             }
         }
 
         UserModel updateModel = UserModel.builder()
                 .id(id)
-                .name(request.getName().isEmpty() ? model.getName() : request.getName())
-                .login(request.getLogin().isEmpty() ? model.getLogin() : request.getLogin())
-                .accessType(request.getAccessType() == null ? model.getAccessType() : request.getAccessType())
+                .name(utilities.getOrDefault(request.getName(), model.getName()))
+                .login(utilities.getOrDefault(request.getLogin(), model.getLogin()))
+                .accessType(utilities.getOrDefault(request.getAccessType(), model.getAccessType()))
                 .password(null)
                 .lastModifiedAt(LocalDateTime.now())
                 .build();
@@ -98,12 +97,12 @@ public class UserService {
     }
 
     public Boolean deleteUserByToken(String token) throws Exception {
-        String id = tokenService.getTokenId(token);
+        String id = getIdFromToken(token);
         return deleteUser(id);
     }
 
     public UserResponse updateUserByToken(String token, UserRequest request) throws Exception {
-        String id = tokenService.getTokenId(token);
+        String id = getIdFromToken(token);
         return updateUser(id, request);
     }
 
@@ -111,22 +110,8 @@ public class UserService {
         return userRepository.findAll(pageable).map(UserConverter::toUserResponse);
     }
 
-    public Pair<UserResponse, String> authenticateUser(LoginRequest request) throws Exception {
-
-        UserModel model = getModelByLogin(request.getLogin());
-
-        Authentication auth = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(request.getLogin(), request.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(auth);
-
-        String token = tokenService.generateToken(auth, model.getId());
-
-        return Pair.of(UserConverter.toUserResponse(model), token);
-
-    }
-
     public UserResponse getUserByToken(String token) throws Exception {
-        String id = tokenService.getTokenId(token);
+        String id = getIdFromToken(token);
         return getUserById(id);
     }
 
@@ -138,8 +123,7 @@ public class UserService {
         return userRepository.findUserById(id).orElseThrow(() -> new UsernameNotFoundException("Could not find user."));
     }
 
-    private UserModel getModelByLogin(String login) throws Exception {
-        return userRepository.findUserByLogin(login)
-                .orElseThrow(() -> new UsernameNotFoundException("Could not find user."));
+    private String getIdFromToken(String token) {
+        return jwtDecoder.decode(token).getClaimAsString("id");
     }
 }

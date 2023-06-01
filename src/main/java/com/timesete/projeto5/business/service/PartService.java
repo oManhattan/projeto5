@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.timesete.projeto5.business.converter.PartConverter;
+import com.timesete.projeto5.business.util.Utilities;
 import com.timesete.projeto5.model.dto.Part.PartRequest;
 import com.timesete.projeto5.model.dto.Part.PartResponse;
 import com.timesete.projeto5.model.entity.PartModel;
@@ -18,6 +19,9 @@ public class PartService {
 
     @Autowired
     private PartRepository partRepository;
+
+    @Autowired
+    private Utilities utilities;
 
     public Page<PartResponse> getAllParts(Pageable pageable) {
         return partRepository.findAll(pageable).map(PartConverter::toResponse);
@@ -45,27 +49,26 @@ public class PartService {
         PartModel model = partRepository.findPartById(id)
                 .orElseThrow(() -> new RuntimeException("Part not found"));
 
-        PartModel newModel = PartConverter.toModel(request);
+        PartModel newPart = PartModel.builder()
+                .id(id)
+                .partnumber(utilities.getOrDefault(request.getPartnumber(), model.getPartnumber()))
+                .name(utilities.getOrDefault(request.getName(), model.getName()))
+                .price(utilities.getOrDefault(request.getPrice(), model.getPrice()))
+                .axleSide(utilities.getOrDefault(request.getAxleSide(), model.getAxleSide()))
+                .carModel(utilities.getOrDefault(request.getCarModel(), model.getCarModel()))
+                .compability(utilities.getOrDefault(request.getCompability(), model.getCompability()))
+                .manufacturer(utilities.getOrDefault(request.getManufacturer(), model.getManufacturer()))
+                .minimumStock(utilities.getOrDefault(request.getMinimumStock(), model.getMinimumStock()))
+                .state(utilities.getOrDefault(request.getState(), model.getState()))
+                .subsystem(utilities.getOrDefault(request.getSubsystem(), model.getSubsystem()))
+                .timeInUse(utilities.getOrDefault(request.getTimeInUse(), model.getTimeInUse()))
+                .weight(utilities.getOrDefault(request.getWeight(), model.getWeight()))
+                .lastModifiedAt(LocalDateTime.now())
+                .build();
 
-        model.setName(newModel.getName().isEmpty() ? model.getName() : newModel.getName());
-        model.setPrice(newModel.getPrice() == null ? model.getPrice() : newModel.getPrice());
-        model.setAxleSide(newModel.getAxleSide().isEmpty() ? model.getAxleSide() : newModel.getAxleSide());
-        model.setCarModel(newModel.getCarModel().isEmpty() ? model.getCarModel() : newModel.getCarModel());
-        model.setCompability(newModel.getCompability().isEmpty() ? model.getCompability() : newModel.getCompability());
-        model.setManufacturer(
-                newModel.getManufacturer().isEmpty() ? model.getManufacturer() : newModel.getManufacturer());
-        model.setMinimumStock(
-                newModel.getMinimumStock() == null ? model.getMinimumStock() : newModel.getMinimumStock());
-        model.setState(newModel.getState().isEmpty() ? model.getState() : newModel.getState());
-        model.setSubsystem(newModel.getSubsystem().isEmpty() ? model.getSubsystem() : newModel.getSubsystem());
-        model.setTimeInUse(newModel.getTimeInUse() == null ? model.getTimeInUse() : newModel.getTimeInUse());
-        model.setWeight(newModel.getWeight() == null ? model.getWeight() : newModel.getWeight());
+        partRepository.updatePartById(id, newPart);
 
-        if (partRepository.updatePartById(id, newModel) > 0) {
-            return PartConverter.toResponse(model);
-        }
-
-        throw new RuntimeException("Part not found");
+        return PartConverter.toResponse(newPart);
     }
 
     public PartResponse getPartById(String id) {
