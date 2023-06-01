@@ -1,7 +1,7 @@
 package com.timesete.projeto5.business.converter;
 
-import com.timesete.projeto5.model.dto.UserRequest;
-import com.timesete.projeto5.model.dto.UserResponse;
+import com.timesete.projeto5.model.dto.User.UserRequest;
+import com.timesete.projeto5.model.dto.User.UserResponse;
 import com.timesete.projeto5.model.entity.UserModel;
 
 import java.util.List;

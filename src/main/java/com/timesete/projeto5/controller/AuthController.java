@@ -1,8 +1,9 @@
 package com.timesete.projeto5.controller;
 
 import com.timesete.projeto5.business.service.UserService;
-import com.timesete.projeto5.model.dto.LoginRequest;
-import com.timesete.projeto5.model.dto.UserResponse;
+import com.timesete.projeto5.model.dto.User.LoginRequest;
+import com.timesete.projeto5.model.dto.User.UserResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.http.ResponseEntity;

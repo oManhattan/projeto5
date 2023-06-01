@@ -9,10 +9,10 @@ import java.util.Optional;
 public interface UserRepository extends MongoRepository<UserModel, String> {
 
     @Query(value = "{'login': ?0}")
-    Optional<UserModel> findUserByLogin(String login);
+    Optional<UserModel> findUserByLogin(final String login);
 
     @Query(value = "{'_id': ?0}")
-    Optional<UserModel> findUserById(String id);
+    Optional<UserModel> findUserById(final String id);
 
     @Query("{ '_id': ?0 }")
     @Update("{ '$set': ?1 }")

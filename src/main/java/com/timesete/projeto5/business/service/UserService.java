@@ -2,9 +2,9 @@ package com.timesete.projeto5.business.service;
 
 import com.timesete.projeto5.business.converter.UserConverter;
 import com.timesete.projeto5.business.util.RegexUtil;
-import com.timesete.projeto5.model.dto.LoginRequest;
-import com.timesete.projeto5.model.dto.UserRequest;
-import com.timesete.projeto5.model.dto.UserResponse;
+import com.timesete.projeto5.model.dto.User.LoginRequest;
+import com.timesete.projeto5.model.dto.User.UserRequest;
+import com.timesete.projeto5.model.dto.User.UserResponse;
 import com.timesete.projeto5.model.entity.UserModel;
 import com.timesete.projeto5.model.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,8 +1,9 @@
 package com.timesete.projeto5.controller;
 
 import com.timesete.projeto5.business.service.UserService;
-import com.timesete.projeto5.model.dto.UserRequest;
-import com.timesete.projeto5.model.dto.UserResponse;
+import com.timesete.projeto5.model.dto.User.UserRequest;
+import com.timesete.projeto5.model.dto.User.UserResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createUser(@RequestBody UserRequest request) {
+    public ResponseEntity<?> createUser(@RequestBody(required = true) UserRequest request) {
         try {
             UserResponse response = userService.createUser(request);
             return ResponseEntity.ok(response);
@@ -36,7 +37,7 @@ public class UserController {
     }
 
     @GetMapping("/self/profile")
-    public ResponseEntity<?> getUserProfile(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> getUserProfile(@RequestHeader(required = true, name = "Authorization") String token) {
         try {
             UserResponse response = userService.getUserByToken(token);
             return ResponseEntity.ok().body(response);
@@ -46,7 +47,7 @@ public class UserController {
     }
 
     @PutMapping("/self/update")
-    public ResponseEntity<?> updateUser(@RequestHeader("Authorization") String token, @RequestBody UserRequest request) {
+    public ResponseEntity<?> updateUser(@RequestHeader(required = true, name = "Authorization") String token, @RequestBody(required = true) UserRequest request) {
         try {
             UserResponse response = userService.updateUserByToken(token, request);
             return ResponseEntity.ok().body(response);

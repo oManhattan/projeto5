@@ -22,16 +22,14 @@ public class TokenService {
 
     public String generateToken(Authentication authentication, String id) {
         Instant now = Instant.now();
-        String scope = authentication.getAuthorities().stream()
+        String authority = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(" "));
         JwtClaimsSet claims = JwtClaimsSet.builder()
-                .issuer("self")
                 .issuedAt(now)
                 .expiresAt(now.plus(2, ChronoUnit.HOURS))
-                .subject(authentication.getName())
                 .claim("id", id)
-                .claim("scope", scope)
+                .claim("authority", authority)
                 .build();
 
         var encodedParameters = JwtEncoderParameters.from(JwsHeader.with(MacAlgorithm.HS512).build(), claims);

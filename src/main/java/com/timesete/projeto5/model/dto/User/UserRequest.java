@@ -1,4 +1,4 @@
-package com.timesete.projeto5.model.dto;
+package com.timesete.projeto5.model.dto.User;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-@JsonPropertyOrder({"name", "login", "password", "accessType"})
+@JsonPropertyOrder({ "name", "login", "password", "accessType" })
 public class UserRequest {
 
     @JsonProperty(namespace = "name")

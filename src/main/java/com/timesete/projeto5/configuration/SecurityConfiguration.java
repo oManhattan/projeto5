@@ -2,6 +2,8 @@ package com.timesete.projeto5.configuration;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.timesete.projeto5.business.service.UserAuthenticationProviderService;
+import com.timesete.projeto5.model.entity.UserAccessType;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,6 +31,12 @@ public class SecurityConfiguration {
 
     private final String SECRET = "ef2a4c8a83c3fa4fb93c2b551c80b7ed4487e136a6c798366d2e91b88c9640f4";
 
+    private final String[] LIMITED_PART_ENDPOINTS = {
+            "/api/v1/part/create",
+            "api/v1/part/update",
+            "api/v1/part/delete"
+    };
+
     @Autowired
     private UserAuthenticationProviderService userAuthenticationProviderService;
 
@@ -43,7 +51,8 @@ public class SecurityConfiguration {
         return new NimbusJwtEncoder(new ImmutableSecret<>(SECRET.getBytes()));
     }
 
-    @Bean JwtDecoder jwtDecoder() {
+    @Bean
+    JwtDecoder jwtDecoder() {
         return NimbusJwtDecoder
                 .withSecretKey(secretKey())
                 .macAlgorithm(MacAlgorithm.HS512)
@@ -63,6 +72,7 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> {
                     auth
+                            .requestMatchers(LIMITED_PART_ENDPOINTS).hasAnyAuthority(UserAccessType.ADMIN.toString(), UserAccessType.ANALYST.toString())
                             .requestMatchers("/api/v1/auth/token").permitAll()
                             .anyRequest().authenticated();
                 })
