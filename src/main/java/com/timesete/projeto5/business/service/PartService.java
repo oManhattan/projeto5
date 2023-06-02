@@ -20,7 +20,6 @@ public class PartService {
     @Autowired
     private PartRepository partRepository;
 
-    @Autowired
     private Utilities utilities;
 
     public Page<PartResponse> getAllParts(Pageable pageable) {

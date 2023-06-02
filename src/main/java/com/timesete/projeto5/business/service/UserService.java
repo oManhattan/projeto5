@@ -30,7 +30,6 @@ public class UserService {
     @Autowired
     private JwtDecoder jwtDecoder;
 
-    @Autowired
     private Utilities utilities;
 
     public UserResponse createUser(UserRequest request) throws Exception {
