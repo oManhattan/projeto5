@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.timesete.projeto5.business.converter.PartConverter;
-import com.timesete.projeto5.business.util.Utilities;
+import com.timesete.projeto5.business.util.GnUtilities;
 import com.timesete.projeto5.model.dto.Part.PartRequest;
 import com.timesete.projeto5.model.dto.Part.PartResponse;
 import com.timesete.projeto5.model.entity.PartModel;
@@ -19,8 +19,6 @@ public class PartService {
 
     @Autowired
     private PartRepository partRepository;
-
-    private Utilities utilities;
 
     public Page<PartResponse> getAllParts(Pageable pageable) {
         return partRepository.findAll(pageable).map(PartConverter::toResponse);
@@ -50,18 +48,18 @@ public class PartService {
 
         PartModel newPart = PartModel.builder()
                 .id(id)
-                .partnumber(utilities.getOrDefault(request.getPartnumber(), model.getPartnumber()))
-                .name(utilities.getOrDefault(request.getName(), model.getName()))
-                .price(utilities.getOrDefault(request.getPrice(), model.getPrice()))
-                .axleSide(utilities.getOrDefault(request.getAxleSide(), model.getAxleSide()))
-                .carModel(utilities.getOrDefault(request.getCarModel(), model.getCarModel()))
-                .compability(utilities.getOrDefault(request.getCompability(), model.getCompability()))
-                .manufacturer(utilities.getOrDefault(request.getManufacturer(), model.getManufacturer()))
-                .minimumStock(utilities.getOrDefault(request.getMinimumStock(), model.getMinimumStock()))
-                .state(utilities.getOrDefault(request.getState(), model.getState()))
-                .subsystem(utilities.getOrDefault(request.getSubsystem(), model.getSubsystem()))
-                .timeInUse(utilities.getOrDefault(request.getTimeInUse(), model.getTimeInUse()))
-                .weight(utilities.getOrDefault(request.getWeight(), model.getWeight()))
+                .partnumber(GnUtilities.getOrDefault(request.getPartnumber(), model.getPartnumber()))
+                .name(GnUtilities.getOrDefault(request.getName(), model.getName()))
+                .price(GnUtilities.getOrDefault(request.getPrice(), model.getPrice()))
+                .axleSide(GnUtilities.getOrDefault(request.getAxleSide(), model.getAxleSide()))
+                .carModel(GnUtilities.getOrDefault(request.getCarModel(), model.getCarModel()))
+                .compability(GnUtilities.getOrDefault(request.getCompability(), model.getCompability()))
+                .manufacturer(GnUtilities.getOrDefault(request.getManufacturer(), model.getManufacturer()))
+                .minimumStock(GnUtilities.getOrDefault(request.getMinimumStock(), model.getMinimumStock()))
+                .state(GnUtilities.getOrDefault(request.getState(), model.getState()))
+                .subsystem(GnUtilities.getOrDefault(request.getSubsystem(), model.getSubsystem()))
+                .timeInUse(GnUtilities.getOrDefault(request.getTimeInUse(), model.getTimeInUse()))
+                .weight(GnUtilities.getOrDefault(request.getWeight(), model.getWeight()))
                 .lastModifiedAt(LocalDateTime.now())
                 .build();
 

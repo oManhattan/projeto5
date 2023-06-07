@@ -12,7 +12,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 
 import com.timesete.projeto5.business.converter.UserConverter;
-import com.timesete.projeto5.business.util.Utilities;
+import com.timesete.projeto5.business.util.GnUtilities;
 import com.timesete.projeto5.model.dto.User.UserRequest;
 import com.timesete.projeto5.model.dto.User.UserResponse;
 import com.timesete.projeto5.model.entity.UserModel;
@@ -30,19 +30,17 @@ public class UserService {
     @Autowired
     private JwtDecoder jwtDecoder;
 
-    private Utilities utilities;
-
     public UserResponse createUser(UserRequest request) throws Exception {
 
         if (userRepository.findUserByLogin(request.getLogin()).isPresent()) {
             throw new Exception("E-mail already registered");
         }
 
-        if (!Utilities.validateEmail(request.getLogin())) {
+        if (!GnUtilities.validateEmail(request.getLogin())) {
             throw new Exception("E-mail is invalid");
         }
 
-        if (!Utilities.validatePassword(request.getPassword())) {
+        if (!GnUtilities.validatePassword(request.getPassword())) {
             throw new Exception("Password does not conform to the minimum specified");
         }
 
@@ -66,16 +64,16 @@ public class UserService {
                 throw new Exception("E-mail already registered");
             }
 
-            if (!Utilities.validateEmail(request.getLogin())) {
+            if (!GnUtilities.validateEmail(request.getLogin())) {
                 throw new Exception("E-mail is invalid");
             }
         }
 
         UserModel updateModel = UserModel.builder()
                 .id(id)
-                .name(utilities.getOrDefault(request.getName(), model.getName()))
-                .login(utilities.getOrDefault(request.getLogin(), model.getLogin()))
-                .accessType(utilities.getOrDefault(request.getAccessType(), model.getAccessType()))
+                .name(GnUtilities.getOrDefault(request.getName(), model.getName()))
+                .login(GnUtilities.getOrDefault(request.getLogin(), model.getLogin()))
+                .accessType(GnUtilities.getOrDefault(request.getAccessType(), model.getAccessType()))
                 .password(null)
                 .lastModifiedAt(LocalDateTime.now())
                 .build();

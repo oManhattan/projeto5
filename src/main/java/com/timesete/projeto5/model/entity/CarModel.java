@@ -11,27 +11,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-@Document(collection = "part")
-public class PartModel {
-  
+@Builder
+@Document(collection = "car")
+public class CarModel {
+    
     private String id;
-    private String partnumber;
-    private String name;
-    private Float weight;
-    private String state;
-    private String carModel;
-    private String subsystem;
-    private String manufacturer;
-    private String axleSide;
-    private Float price;
-    private List<String> compability;
-    private Integer timeInUse;   
-    private PartMinimumStock minimumStock;
+    private String chassi;
+    private String model;
+    private List<String> parts;
     private LocalDateTime createdAt;
     private LocalDateTime lastModifiedAt;
+
 }

@@ -2,7 +2,7 @@ package com.timesete.projeto5.business.util;
 
 import java.util.regex.Pattern;
 
-public class Utilities {
+public class GnUtilities {
 
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
     private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
@@ -36,7 +36,7 @@ public class Utilities {
      * @param defaultValue default value
      * @return value if it is not null, otherwise returns the default value
      */
-    public <T> T getOrDefault(T value, T defaultValue) {
+    public static <T> T getOrDefault(T value, T defaultValue) {
         return value == null ? defaultValue : value;
     }
 
@@ -45,7 +45,7 @@ public class Utilities {
      * @param defaultValue default value
      * @return value if it is not null or blank, otherwise returns the default value
      */
-    public String getOrDefault(String value, String defaultValue) {
+    public static String getOrDefault(String value, String defaultValue) {
         if (value == null) {
             return defaultValue;
         }

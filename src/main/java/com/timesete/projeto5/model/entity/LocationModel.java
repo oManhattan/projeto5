@@ -16,22 +16,14 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-@Document(collection = "part")
-public class PartModel {
-  
+@Document(collection = "location")
+public class LocationModel {
+    
     private String id;
-    private String partnumber;
     private String name;
-    private Float weight;
-    private String state;
-    private String carModel;
-    private String subsystem;
-    private String manufacturer;
-    private String axleSide;
-    private Float price;
-    private List<String> compability;
-    private Integer timeInUse;   
-    private PartMinimumStock minimumStock;
+    private List<String> parts;
+    private List<String> sublocations;
     private LocalDateTime createdAt;
     private LocalDateTime lastModifiedAt;
+
 }

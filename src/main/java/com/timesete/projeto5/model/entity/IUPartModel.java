@@ -16,9 +16,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-@Document(collection = "part")
-public class PartModel {
-  
+@Document(collection = "iupart")
+public class IUPartModel {
+    
     private String id;
     private String partnumber;
     private String name;
@@ -31,7 +31,7 @@ public class PartModel {
     private Float price;
     private List<String> compability;
     private Integer timeInUse;   
-    private PartMinimumStock minimumStock;
     private LocalDateTime createdAt;
     private LocalDateTime lastModifiedAt;
+
 }
